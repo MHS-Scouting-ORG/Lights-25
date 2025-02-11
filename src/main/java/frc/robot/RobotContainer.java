@@ -32,6 +32,14 @@ public class RobotContainer {
       private final JoystickButton purpleStick = new JoystickButton(m_driverController, XboxController.Button.kA.value);
       private final JoystickButton bumblEbee = new JoystickButton(m_driverController, XboxController.Button.kY.value);
       private final JoystickButton blindhoe = new JoystickButton(m_driverController, XboxController.Button.kB.value);
+      private final JoystickButton num_5 = new JoystickButton(m_driverController, XboxController.Button.kLeftBumper.value);
+      private final JoystickButton num_6 = new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value);
+      private final JoystickButton num_7 = new JoystickButton(m_driverController, XboxController.Button.kLeftStick.value);
+      private final JoystickButton num_8 = new JoystickButton(m_driverController, XboxController.Button.kRightStick.value);
+
+
+
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -44,9 +52,13 @@ public class RobotContainer {
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
     unicornBarf.onTrue(new InstantCommand(() -> redlightdistrict.toggleIdleStatus()));
-    purpleStick.onTrue(new InstantCommand(() -> redlightdistrict.processorTracking()));
-    bumblEbee.onTrue(new InstantCommand(() -> redlightdistrict.reefTracking()));
+    purpleStick.onTrue(new InstantCommand(() -> redlightdistrict.algeaIntake()));
+    bumblEbee.onTrue(new InstantCommand(() -> redlightdistrict.coralIntake()));
     blindhoe.onTrue(new InstantCommand(() -> redlightdistrict.off()));
+    num_5.onTrue(new InstantCommand(() -> redlightdistrict.scored()));
+    num_6.onTrue(new InstantCommand(() -> redlightdistrict.reefTracking()));
+    num_7.onTrue(new InstantCommand(() -> redlightdistrict.processorTracking()));
+    num_8.onTrue(new InstantCommand(() -> redlightdistrict.scored()));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.

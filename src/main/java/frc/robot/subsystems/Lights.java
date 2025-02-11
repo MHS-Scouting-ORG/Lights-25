@@ -24,14 +24,28 @@ public class Lights extends SubsystemBase {
 
     public void algeaIntake() {
         setSolidColor(51, 163, 145);
+        Timer.delay(0.08);
+        setSolidColor(0, 0, 0);
+        Timer.delay(0.08);
+        setSolidColor(51, 163, 145);
+        Timer.delay(0.08);
+        setSolidColor(0, 0, 0);
+        
     }
 
     public void coralIntake() {
         setSolidColor(163, 161, 137);
+        Timer.delay(0.08);
+        setSolidColor(0, 0, 0);
+        Timer.delay(0.08);
+        setSolidColor(163, 161, 137);
+        Timer.delay(0.08);
+        setSolidColor(0, 0, 0);
     }
 
     public void reefTracking() {
         setSolidColor(153, 1, 255);
+        
     }
 
     public void processorTracking() {
@@ -40,6 +54,17 @@ public class Lights extends SubsystemBase {
 
     public void scored() {
         setSolidColor(255, 253, 85);
+        Timer.delay(0.08);
+        setSolidColor(0, 0, 0);
+        Timer.delay(0.08);
+        setSolidColor(255, 253, 85);
+        setSolidColor(0, 0, 0);
+        Timer.delay(0.08);
+        setSolidColor(255, 253, 85);
+        Timer.delay(0.08);
+        setSolidColor(0, 0, 0);
+
+
     }
 
     public void off() {
