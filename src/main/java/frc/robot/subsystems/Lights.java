@@ -2,96 +2,86 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Lights extends SubsystemBase {
-  private AddressableLED m_led;
-  private AddressableLEDBuffer m_ledBuffer;
-  private int rainbowFirstPixelHue = 0;
-  private boolean rainbowOn = false;
+    private AddressableLED m_led;
+    private AddressableLEDBuffer m_ledBuffer;
+    private static final int kPort = 9;
+    private static final int kLength = 100;
 
-  public Lights() {
-    m_led = new AddressableLED(9);
-    m_ledBuffer = new AddressableLEDBuffer(100);
-    m_led.setLength(m_ledBuffer.getLength());
-    m_led.setData(m_ledBuffer);
-    m_led.start();
-  }
-  public void toggleRainbow(){
-    if (!rainbowOn) {
-      rainbowOn = true;
-    }
-    else{
-      rainbowOn = false;
-    }
-    
-  }
-  public void rainbow() {
-    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-      int hue = (rainbowFirstPixelHue + (i * 180 / m_ledBuffer.getLength())) % 180;
-      m_ledBuffer.setHSV(i, hue, 255, 128);
-    }
-    m_led.setData(m_ledBuffer);
-    rainbowFirstPixelHue += 3;
-    rainbowFirstPixelHue %= 180;
-    
+    private boolean isIdleOn = false;
+    private int idleOffset = 0; // Keeps track of animation step
 
-  }
+    public Lights() {
+        m_led = new AddressableLED(kPort);
+        m_ledBuffer = new AddressableLEDBuffer(kLength);
+        m_led.setLength(m_ledBuffer.getLength());
+        m_led.setData(m_ledBuffer);
+        m_led.start();
+    }
 
-  public void off() {
-    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-      m_ledBuffer.setRGB(i, 0, 0, 0);
+    public void algeaIntake() {
+        setSolidColor(51, 163, 145);
     }
-    m_led.setData(m_ledBuffer);
-  }
 
-  public void sunflower() {
-    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-      m_ledBuffer.setRGB(i, 55, 55, 0);
+    public void coralIntake() {
+        setSolidColor(163, 161, 137);
     }
-    m_led.setData(m_ledBuffer);
-  }
-  
-  public void lavendar() {
-    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-      m_ledBuffer.setRGB(i, 55, 0, 55);
-    }
-    m_led.setData(m_ledBuffer);
-  }
-  
-  public void poppy() {
-    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-      m_ledBuffer.setRGB(i, 255, 0, 0);
-    }
-    m_led.setData(m_ledBuffer);
-  }
 
-  public void potOfGold() {
-    for (int i = 0; i < m_ledBuffer.getLength(); i += 6) {
-      m_ledBuffer.setRGB(i, 255, 0, 0);
+    public void reefTracking() {
+        setSolidColor(153, 1, 255);
     }
-    for (int i = 1; i < m_ledBuffer.getLength(); i += 6) {
-      m_ledBuffer.setRGB(i, 255, 165, 0);
+
+    public void processorTracking() {
+        setSolidColor(25, 26, 137);
     }
-    for (int i = 2; i < m_ledBuffer.getLength(); i += 6) {
-      m_ledBuffer.setRGB(i, 255, 255, 0);
+
+    public void scored() {
+        setSolidColor(255, 253, 85);
     }
-    for (int i = 3; i < m_ledBuffer.getLength(); i += 6) {
-      m_ledBuffer.setRGB(i, 0, 255, 0);
+
+    public void off() {
+        setSolidColor(0, 0, 0);
     }
-    for (int i = 4; i < m_ledBuffer.getLength(); i += 6) {
-      m_ledBuffer.setRGB(i, 255, 0, 255);
+
+    private void setSolidColor(int r, int g, int b) {
+        for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+            m_ledBuffer.setRGB(i, r, g, b);
+        }
+        m_led.setData(m_ledBuffer);
     }
-    for (int i = 5; i < m_ledBuffer.getLength(); i += 6) {
-      m_ledBuffer.setRGB(i, 255, 0, 255);
+
+    /** Creates a scrolling blue/yellow/white animation */
+    private void updateIdleAnimation() {
+        idleOffset = (idleOffset + 1) % 4; // Cycle through offsets
+
+        for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+            int pos = (i + idleOffset) % 4;
+
+            if (pos == 0) {
+                m_ledBuffer.setRGB(i, 0, 2, 61);
+            } else if (pos == 1) {
+                m_ledBuffer.setRGB(i, 255, 255, 255);
+            } else if (pos == 2) {
+                m_ledBuffer.setRGB(i, 255, 253, 85);
+            } else {
+                m_ledBuffer.setRGB(i, 0, 0, 0);
+            }
+        }
+        m_led.setData(m_ledBuffer);
     }
-    m_led.setData(m_ledBuffer);
-  }
-  
-  @Override
-  public void periodic() {
-    if (rainbowOn) {
-      rainbow();
+
+    @Override
+    public void periodic() {
+        if (isIdleOn) {
+            updateIdleAnimation();
+            Timer.delay(0.1); // jovi come here this is ur problem for loop overrun!!
+        }
     }
-  }
+
+    public void toggleIdleStatus() {
+        isIdleOn = !isIdleOn;
+    }
 }

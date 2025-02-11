@@ -9,10 +9,8 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Lights;
-import pabeles.concurrency.ConcurrencyOps.NewInstance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.XboxController;
@@ -45,9 +43,9 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
-    unicornBarf.onTrue(new InstantCommand(() -> redlightdistrict.toggleRainbow()));
-    purpleStick.onTrue(new InstantCommand(() -> redlightdistrict.lavendar()));
-    bumblEbee.onTrue(new InstantCommand(() -> redlightdistrict.sunflower()));
+    unicornBarf.onTrue(new InstantCommand(() -> redlightdistrict.toggleIdleStatus()));
+    purpleStick.onTrue(new InstantCommand(() -> redlightdistrict.processorTracking()));
+    bumblEbee.onTrue(new InstantCommand(() -> redlightdistrict.reefTracking()));
     blindhoe.onTrue(new InstantCommand(() -> redlightdistrict.off()));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
