@@ -10,9 +10,45 @@ public class Lights extends SubsystemBase {
     private AddressableLEDBuffer m_ledBuffer;
     private static final int kPort = 9;
     private static final int kLength = 100;
-
+    private Timer m_timer = new Timer();
+    private boolean isBlinking = false;
+    private int blinkStep = 0;
+    private int blinkR, blinkG, blinkB;
     private boolean isIdleOn = false;
     private int idleOffset = 0; // Keeps track of animation step
+
+
+    public void blinkThrice(int r, int g, int b) {
+        blinkR = r;
+        blinkG = g;
+        blinkB = b;
+        isBlinking = true;
+        blinkStep = 0;
+        m_timer.reset();
+        m_timer.start();
+    }
+
+    private void updateBlinking() {
+        if (!isBlinking) return;
+    
+        double time = m_timer.get();
+    
+        if (time >= blinkStep * 0.1 && blinkStep < 6) {
+            if (blinkStep % 2 == 0) {
+                setSolidColor(blinkR, blinkG, blinkB); // ON
+            } else {
+                setSolidColor(0, 0, 0); // OFF
+            }
+            blinkStep++;
+        }
+    
+        if (blinkStep >= 6) {
+            isBlinking = false;
+            setSolidColor(0, 0, 0); // Ensure LEDs are off after blinking
+            m_timer.stop();
+        }
+    }
+    
 
     public Lights() {
         m_led = new AddressableLED(kPort);
@@ -23,48 +59,27 @@ public class Lights extends SubsystemBase {
     }
 
     public void algeaIntake() {
-        setSolidColor(51, 163, 145);
-        Timer.delay(0.08);
-        setSolidColor(0, 0, 0);
-        Timer.delay(0.08);
-        setSolidColor(51, 163, 145);
-        Timer.delay(0.08);
-        setSolidColor(0, 0, 0);
+        blinkThrice(51, 163, 145);
         
     }
 
     public void coralIntake() {
-        setSolidColor(163, 161, 137);
-        Timer.delay(0.08);
-        setSolidColor(0, 0, 0);
-        Timer.delay(0.08);
-        setSolidColor(163, 161, 137);
-        Timer.delay(0.08);
-        setSolidColor(0, 0, 0);
+        blinkThrice(163, 161, 137);
+        
     }
-
     public void reefTracking() {
-        setSolidColor(153, 1, 255);
+        blinkThrice(153, 1, 255);
         
     }
 
     public void processorTracking() {
-        setSolidColor(25, 26, 137);
+        blinkThrice(25,26,137);
+            
     }
 
     public void scored() {
-        setSolidColor(255, 253, 85);
-        Timer.delay(0.08);
-        setSolidColor(0, 0, 0);
-        Timer.delay(0.08);
-        setSolidColor(255, 253, 85);
-        setSolidColor(0, 0, 0);
-        Timer.delay(0.08);
-        setSolidColor(255, 253, 85);
-        Timer.delay(0.08);
-        setSolidColor(0, 0, 0);
-
-
+        blinkThrice(255, 253, 85);
+        
     }
 
     public void off() {
@@ -80,21 +95,25 @@ public class Lights extends SubsystemBase {
 
     /** Creates a scrolling blue/yellow/white animation */
     private void updateIdleAnimation() {
-        idleOffset = (idleOffset + 1) % 4; // Cycle through offsets
+        m_timer.start(); 
 
-        for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-            int pos = (i + idleOffset) % 4;
+        if (m_timer.hasElapsed(0.1)) {
+            idleOffset = (idleOffset + 1) % 4; // Cycle through offsets
+            for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+                int pos = (i + idleOffset) % 4;
 
-            if (pos == 0) {
-                m_ledBuffer.setRGB(i, 0, 2, 61);
-            } else if (pos == 1) {
-                m_ledBuffer.setRGB(i, 255, 255, 255);
-            } else if (pos == 2) {
-                m_ledBuffer.setRGB(i, 255, 253, 85);
-            } else {
-                m_ledBuffer.setRGB(i, 0, 0, 0);
+                if (pos == 0) {
+                    m_ledBuffer.setRGB(i, 0, 2, 61);
+                } else if (pos == 1) {
+                    m_ledBuffer.setRGB(i, 255, 255, 255);
+                } else if (pos == 2) {
+                    m_ledBuffer.setRGB(i, 255, 253, 85);
+                } else {
+                    m_ledBuffer.setRGB(i, 0, 0, 0);
+                }
             }
         }
+        m_timer.reset();
         m_led.setData(m_ledBuffer);
     }
 
@@ -102,7 +121,10 @@ public class Lights extends SubsystemBase {
     public void periodic() {
         if (isIdleOn) {
             updateIdleAnimation();
-            Timer.delay(0.1); // jovi come here this is ur problem for loop overrun!!
+
+        }
+        if (isBlinking) {
+            updateBlinking();   
         }
     }
 

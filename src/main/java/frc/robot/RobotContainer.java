@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Joystick;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -26,6 +28,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Lights redlightdistrict = new Lights();
   // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final Joystick joystick = new Joystick(0);
   private final XboxController m_driverController =
       new XboxController(OperatorConstants.kDriverControllerPort);
       private final JoystickButton unicornBarf = new JoystickButton(m_driverController, XboxController.Button.kX.value);
@@ -36,6 +39,7 @@ public class RobotContainer {
       private final JoystickButton num_6 = new JoystickButton(m_driverController, XboxController.Button.kRightBumper.value);
       private final JoystickButton num_7 = new JoystickButton(m_driverController, XboxController.Button.kLeftStick.value);
       private final JoystickButton num_8 = new JoystickButton(m_driverController, XboxController.Button.kRightStick.value);
+      private final JoystickButton coral = new JoystickButton(joystick, 3);
 
 
 
@@ -53,7 +57,7 @@ public class RobotContainer {
         .onTrue(new ExampleCommand(m_exampleSubsystem));
     unicornBarf.onTrue(new InstantCommand(() -> redlightdistrict.toggleIdleStatus()));
     purpleStick.onTrue(new InstantCommand(() -> redlightdistrict.algeaIntake()));
-    bumblEbee.onTrue(new InstantCommand(() -> redlightdistrict.coralIntake()));
+    coral.onTrue(new InstantCommand(() -> redlightdistrict.coralIntake()));
     blindhoe.onTrue(new InstantCommand(() -> redlightdistrict.off()));
     num_5.onTrue(new InstantCommand(() -> redlightdistrict.scored()));
     num_6.onTrue(new InstantCommand(() -> redlightdistrict.reefTracking()));
